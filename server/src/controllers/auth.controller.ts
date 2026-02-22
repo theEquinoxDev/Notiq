@@ -6,19 +6,17 @@ import User from "../models/user.model.js";
 
 const registerSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6)
+  password: z.string().min(6),
 });
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1)
+  password: z.string().min(1),
 });
 
 const generateToken = (userId: string): string => {
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error("JWT_SECRET is not defined");
-  }
+  if (!secret) throw new Error("JWT_SECRET is not defined");
   return jwt.sign({ id: userId }, secret, { expiresIn: "7d" });
 };
 
@@ -41,14 +39,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       message: "User registered successfully",
       data: {
         token,
-        user: { id: user._id.toString(), email: user.email }
-      }
+        user: { id: user._id.toString(), email: user.email },
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
     }
+    console.error("[register]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -76,14 +75,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       message: "Login successful",
       data: {
         token,
-        user: { id: user._id.toString(), email: user.email }
-      }
+        user: { id: user._id.toString(), email: user.email },
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
     }
+    console.error("[login]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

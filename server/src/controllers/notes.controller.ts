@@ -4,12 +4,12 @@ import Note from "../models/note.model.js";
 
 const createNoteSchema = z.object({
   title: z.string().min(1).max(200),
-  content: z.string().min(1)
+  content: z.string().optional().default(""),
 });
 
 const updateNoteSchema = z.object({
   title: z.string().min(1).max(200).optional(),
-  content: z.string().min(1).optional()
+  content: z.string().optional(),
 });
 
 export const createNote = async (req: Request, res: Response): Promise<void> => {
@@ -19,19 +19,20 @@ export const createNote = async (req: Request, res: Response): Promise<void> => 
     const note = await Note.create({
       title,
       content,
-      userId: req.user!.id
+      userId: req.user!.id,
     });
 
     res.status(201).json({
       success: true,
       message: "Note created successfully",
-      data: note
+      data: note,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
     }
+    console.error("[createNote]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -45,7 +46,7 @@ export const getNotes = async (req: Request, res: Response): Promise<void> => {
 
     const filter: Record<string, unknown> = {
       userId: req.user!.id,
-      deletedAt: null
+      deletedAt: null,
     };
 
     if (search) {
@@ -53,8 +54,8 @@ export const getNotes = async (req: Request, res: Response): Promise<void> => {
     }
 
     const [notes, total] = await Promise.all([
-      Note.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
-      Note.countDocuments(filter)
+      Note.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(limit),
+      Note.countDocuments(filter),
     ]);
 
     res.status(200).json({
@@ -65,21 +66,21 @@ export const getNotes = async (req: Request, res: Response): Promise<void> => {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit)
-      }
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
+    console.error("[getNotes]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 export const getNoteById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const noteId = req.params.id as string;
     const note = await Note.findOne({
-      _id: noteId,
+      _id: req.params.id,
       userId: req.user!.id,
-      deletedAt: null
+      deletedAt: null,
     });
 
     if (!note) {
@@ -90,20 +91,20 @@ export const getNoteById = async (req: Request, res: Response): Promise<void> =>
     res.status(200).json({
       success: true,
       message: "Note fetched successfully",
-      data: note
+      data: note,
     });
   } catch (error) {
+    console.error("[getNoteById]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 export const updateNote = async (req: Request, res: Response): Promise<void> => {
   try {
-    const noteId = req.params.id as string;
     const updates = updateNoteSchema.parse(req.body);
 
     const note = await Note.findOneAndUpdate(
-      { _id: noteId, userId: req.user!.id, deletedAt: null },
+      { _id: req.params.id, userId: req.user!.id, deletedAt: null },
       updates,
       { returnDocument: "after" }
     );
@@ -116,22 +117,22 @@ export const updateNote = async (req: Request, res: Response): Promise<void> => 
     res.status(200).json({
       success: true,
       message: "Note updated successfully",
-      data: note
+      data: note,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
     }
+    console.error("[updateNote]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 export const deleteNote = async (req: Request, res: Response): Promise<void> => {
   try {
-    const noteId = req.params.id as string;
     const note = await Note.findOneAndUpdate(
-      { _id: noteId, userId: req.user!.id, deletedAt: null },
+      { _id: req.params.id, userId: req.user!.id, deletedAt: null },
       { deletedAt: new Date() },
       { returnDocument: "after" }
     );
@@ -143,9 +144,10 @@ export const deleteNote = async (req: Request, res: Response): Promise<void> => 
 
     res.status(200).json({
       success: true,
-      message: "Note deleted successfully"
+      message: "Note deleted successfully",
     });
   } catch (error) {
+    console.error("[deleteNote]", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

@@ -19,8 +19,8 @@ const noteSchema: Schema<INote> = new Schema(
     },
     content: {
       type: String,
-      required: true,
-      trim: true
+      required: false,
+      default: ""
     },
     userId: {
       type: Schema.Types.ObjectId,
