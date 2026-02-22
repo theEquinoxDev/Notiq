@@ -34,7 +34,7 @@ const AuthPage = () => {
       <div className="w-full max-w-sm px-6">
 
         <div className="mb-8">
-          <h1 className="text-2xl font-medium text-ink tracking-tight">Ink</h1>
+          <h1 className="text-2xl font-medium text-ink tracking-tight">Notiq</h1>
           <p className="text-sm text-ink-muted mt-1">
             {isLogin ? "Sign in to your account." : "Create a new account."}
           </p>
