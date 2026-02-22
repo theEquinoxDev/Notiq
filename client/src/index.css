@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@theme {
+  --font-family-sans: "DM Sans", system-ui, sans-serif;
+  --font-family-mono: "DM Mono", "Courier New", monospace;
+  --font-family-serif: "Playfair Display", Georgia, serif;
+
+  --color-bg: #fef8ee;
+  --color-surface: #fcefd8;
+  --color-border: #b87840;
+  --color-border-subtle: #e8cea0;
+
+  --color-ink: #180c04;
+  --color-ink-secondary: #4a2a10;
+  --color-ink-muted: #8a6030;
+  --color-ink-faint: #c09858;
+
+  --color-fill: #c04808;
+  --color-fill-inverse: #fef8ee;
+
+  --color-danger: #c02818;
+  --color-danger-subtle: #fff2ee;
+  --color-success: #386820;
+}
+
+@layer base {
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-subtle);
+  }
+
+  ::selection {
+    background: var(--color-fill);
+    color: var(--color-fill-inverse);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .anim-fade {
+    animation: fadeIn 0.15s ease both;
+  }
+
+  .anim-slide {
+    animation: slideDown 0.2s ease both;
+  }
+
+  .delay-1 {
+    animation-delay: 40ms;
+  }
+
+  .delay-2 {
+    animation-delay: 80ms;
+  }
+
+  .delay-3 {
+    animation-delay: 120ms;
+  }
+
+  .delay-4 {
+    animation-delay: 160ms;
+  }
+
+  .delay-5 {
+    animation-delay: 200ms;
+  }
+
+  .delay-6 {
+    animation-delay: 240ms;
+  }
+
+  .btn-slide {
+    background-image: linear-gradient(to right,
+        var(--color-fill) 50%,
+        transparent 50%);
+    background-size: 200% 100%;
+    background-position: 100% center;
+    transition: background-position 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .btn-slide:hover:not(:disabled) {
+    background-position: 0% center;
+    color: var(--color-fill-inverse);
+    border-color: var(--color-fill);
+  }
+
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .font-serif {
+    font-family: var(--font-family-serif);
+  }
+}
