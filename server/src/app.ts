@@ -5,14 +5,14 @@ import notesRoutes from "./routes/notes.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 
 const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(",").map((o) => o.trim())
+  ? process.env.CLIENT_URL.split(",").map((o: string) => o.trim())
   : ["http://localhost:5173"];
 
 const app = express();
 
 app.use(
   cors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {

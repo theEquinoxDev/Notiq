@@ -42,7 +42,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         user: { id: user._id.toString(), email: user.email },
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
@@ -78,7 +78,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         user: { id: user._id.toString(), email: user.email },
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;

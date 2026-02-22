@@ -27,7 +27,7 @@ export const createNote = async (req: Request, res: Response): Promise<void> => 
       message: "Note created successfully",
       data: note,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
@@ -119,7 +119,7 @@ export const updateNote = async (req: Request, res: Response): Promise<void> => 
       message: "Note updated successfully",
       data: note,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, message: "Validation failed", errors: error.issues });
       return;
